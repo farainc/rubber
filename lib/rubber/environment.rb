@@ -92,7 +92,7 @@ module Rubber
                 env_key: '',
                 raise_if_missing_key: false)
 
-            @items = Environment.combine(@items, { 'app_env': app_env.config.stringify_keys })
+            @items = Environment.combine(@items, {'app_env': app_env.config}.stringify_keys)
           rescue Exception
             Rubber.logger.error{"Unable to read rails_credentials configuration from #{file} / #{key}"}
             raise
