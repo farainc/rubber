@@ -4,7 +4,6 @@ require 'delegate'
 require 'monitor'
 require 'rbconfig'
 
-
 module Rubber
   module Configuration
     # Contains the configuration defined in rubber.yml
@@ -54,8 +53,8 @@ module Rubber
       def read_secret_config
         bound = bind()
         @config_secret = bound.rubber_secret
-        if @config_secret
 
+        if @config_secret
           # The config_secret value should point to a file outside of the project directory. When run locally, rubber
           # will be able to read this file directly. In order to support deploys without having to commit this file,
           # rubber will SCP the file up as part of the deploy. In that case, the file can be found in config_root and
@@ -78,14 +77,14 @@ module Rubber
 
       def read_rails_credentials
         bound = bind()
-        @config_credentials = bound.rails_credentials
-        if @config_credentials
+
+        if bound.rails_credentials
           begin
             require 'active_support/encrypted_configuration'
             require 'active_support/core_ext/hash'
 
-            file = "#{@config_credentials}/#{@config_env}.env.yml.enc"
-            key = "#{@config_credentials}/#{@config_env}.master.key"
+            file = "#{@config_root}/#{@config_env}.env.yml.enc"
+            key = "#{@config_root}/#{@config_env}.master.key"
 
             app_env = ActiveSupport::EncryptedConfiguration.new(
                 config_path: file,
@@ -93,7 +92,7 @@ module Rubber
                 env_key: '',
                 raise_if_missing_key: false)
 
-            @items = Environment.combine(@items, app_env.config)
+            @items = Environment.combine(@items, { 'app_env': app_env.config.stringify_keys })
           rescue Exception
             Rubber.logger.error{"Unable to read rails_credentials configuration from #{file} / #{key}"}
             raise
