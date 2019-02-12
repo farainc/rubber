@@ -343,7 +343,7 @@ namespace :rubber do
       rubber_records = {}
       records.each do |record|
         record = Rubber::Util.symbolize_keys(record)
-        record = provider.setup_opts(record) # assign defaults        
+        record = provider.setup_opts(record) # assign defaults
         key = record_key(record)
         rubber_records[key] ||= []
         rubber_records[key] << record
@@ -616,7 +616,7 @@ namespace :rubber do
       end
     end
   end
-  
+
   def destroy_dyndns(instance_item)
     env = rubber_cfg.environment.bind(instance_item.role_names, instance_item.name)
     if env.dns_provider
@@ -711,7 +711,7 @@ namespace :rubber do
     reboot_hosts = reboot_needed.collect {|k, v| v.strip.size > 0 ? k : nil}.compact.sort
 
     # Figure out which hosts are bootstrapping for the first time so we can auto reboot
-    # If there is no deployed app directory, then we have never bootstrapped. 
+    # If there is no deployed app directory, then we have never bootstrapped.
     auto_reboot = multi_capture("echo $(ls #{deploy_to} 2> /dev/null)")
     auto_reboot_hosts = auto_reboot.collect {|k, v| v.strip.size == 0 ? k : nil}.compact.sort
 
@@ -797,7 +797,7 @@ namespace :rubber do
   set :gem_helper_script, <<-'ENDSCRIPT'
     gem_cmd = ARGV[0]
     gems = ARGV[1..-1]
-    cmd = "gem #{gem_cmd} --no-rdoc --no-ri"
+    cmd = "gem #{gem_cmd} --no-document"
 
     to_install = {}
     to_install_ver = {}
