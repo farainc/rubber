@@ -124,7 +124,7 @@ namespace :rubber do
     opts += " --no_post" if no_post
     opts += " --force"   if force
     opts += " --file=\"#{file}\"" if file
-    rsudo "cd #{path} && RUBBER_ENV=#{Rubber.env} RAILS_ENV=#{Rubber.env} ./script/rubber config #{opts}"
+    rsudo "cd #{path} && RUBBER_ENV=#{Rubber.env} RAILS_ENV=#{Rubber.env} RAILS_CREDENTIALS_ENV=#{rubber_env.rails_credentials_env} ./script/rubber config #{opts}"
   end
 
   def config_path
