@@ -95,7 +95,6 @@ module Rubber
             @items = Environment.combine(@items, app_env)
           rescue Exception
             Rubber.logger.error{"Unable to read rails_credentials configuration from #{file} / #{key}"}
-            raise
           end
         end
       end
