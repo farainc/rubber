@@ -4,6 +4,7 @@ require 'rubygems'
 require "socket"
 require 'resolv'
 require 'enumerator'
+require 'capistrano/logger'
 require 'capistrano/hostcmd'
 require 'capistrano/thread_safety_fix'
 require 'capistrano/find_servers_for_task_fix'
