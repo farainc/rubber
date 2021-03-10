@@ -30,10 +30,6 @@ module Rubber
       cfg.environment.bind(roles, host)
     end
 
-    def self.rubber_util
-      Rubber::Util
-    end
-
     def self.rubber_instances
       raise "This convenience method needs Rubber.env to be set" unless Rubber.env
       Rubber::Configuration.get_configuration(Rubber.env).instance
