@@ -241,6 +241,10 @@ module Rubber
         Rubber::Configuration.rubber_env
       end
 
+      def rubber_util
+        Rubber::Util
+      end
+
       def rubber_instances
         Rubber.instances
       end
