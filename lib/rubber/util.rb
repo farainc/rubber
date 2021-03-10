@@ -1,7 +1,22 @@
-
-
 module Rubber
   module Util
+    def strftime_with_time_zone(t, tz, fmt)
+      old_tz = ENV['TZ']
+      ENV['TZ'] = tz
+
+      t.strftime(fmt)
+    ensure
+      ENV['TZ'] = old_tz
+    end
+
+    def utc_offset_with_time_zone(tz)
+      old_tz = ENV['TZ']
+      ENV['TZ'] = tz
+
+      Time.now.utc_offset
+    ensure
+      ENV['TZ'] = old_tz
+    end
 
     def symbolize_keys(map)
       map.inject({}) do |options, (key, value)|
