@@ -33,7 +33,7 @@ module Rubber
       private
 
       def load_from_io(io)
-        item_list = YAML.load(io.read)
+        item_list = YAML.load(io.read, permitted_classes: [Rubber::Configuration::InstanceItem])
 
         if item_list
           item_list.each do |i|
