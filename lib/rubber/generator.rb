@@ -104,7 +104,7 @@ module Rubber
         end
 
         config.options = options
-        template = ERB.new(src_data, safe_level: nil, trim_mode: "-")
+        template = ERB.new(src_data, trim_mode: "-")
         result = template.result(config.get_binding())
         
         return if config.skip
