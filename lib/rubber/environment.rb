@@ -83,10 +83,10 @@ module Rubber
             require 'active_support/encrypted_configuration'
             require 'active_support/core_ext/hash'
 
-            file = "#{@config_root}/#{bound.rails_credentials_env}.env.yml.enc"
-            key = "#{@config_root}/#{bound.rails_credentials_env}.master.key"
+            file = "#{@config_root}/#{bound.rails_credentials_env}.yml.enc"
+            key = "#{@config_root}/#{bound.rails_credentials_env}.key"
 
-            app_env = { app_env: ActiveSupport::EncryptedConfiguration.new(
+            app_env = { credentials: ActiveSupport::EncryptedConfiguration.new(
                 config_path: file,
                 key_path: key,
                 env_key: '',
