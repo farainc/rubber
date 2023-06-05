@@ -86,13 +86,13 @@ module Rubber
             file = "#{@config_root}/#{bound.rails_credentials_env}.yml.enc"
             key = "#{@config_root}/#{bound.rails_credentials_env}.key"
 
-            app_env = { credentials: ActiveSupport::EncryptedConfiguration.new(
-                config_path: file,
-                key_path: key,
-                env_key: '',
-                raise_if_missing_key: false).config }.deep_stringify_keys
+            rails_credential_items = { rails_credentials: ActiveSupport::EncryptedConfiguration.new(
+              config_path: file,
+              key_path: key,
+              env_key: ENV.fetch('RAILS_MASTER_KEY', ''),
+              raise_if_missing_key: false).config }.deep_stringify_keys
 
-            @items = Environment.combine(@items, app_env)
+            @items = Environment.combine(@items, rails_credential_items)
           rescue Exception
             Rubber.logger.error{"Unable to read rails_credentials configuration from #{file} / #{key}"}
           end
