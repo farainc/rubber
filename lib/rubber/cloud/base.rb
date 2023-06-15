@@ -116,7 +116,7 @@ module Rubber
         script = <<-ENDSCRIPT
           # Install iptables if it's not already installed.
           if ! dpkg -l iptables &> /dev/null; then
-            export DEBIAN_FRONTEND=noninteractive; apt-get -q -o Dpkg::Options::=--force-confold -y --force-yes install iptables
+            export DEBIAN_FRONTEND=noninteractive; apt-get -q -o Dpkg::Options::=--force-confold -y --allow install iptables
           fi
 
           # Clear out all firewall rules to start.

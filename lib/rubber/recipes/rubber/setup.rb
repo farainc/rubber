@@ -456,7 +456,7 @@ namespace :rubber do
     ]
 
     install_commands = core_packages.collect do |package|
-      "apt-get -q -o Dpkg::Options::=--force-confold -y --force-yes install #{package} || true"
+      "apt-get -q -o Dpkg::Options::=--force-confold -y --allow install #{package} || true"
     end
 
     sudo_script 'install_core_packages', <<-ENDSCRIPT
@@ -665,7 +665,7 @@ namespace :rubber do
 
           #{apt_get_update_script}
 
-          apt-get -q -o Dpkg::Options::=--force-confold -y --force-yes upgrade
+          apt-get -q -o Dpkg::Options::=--force-confold -y --allow upgrade
         ENDSCRIPT
       else
         sudo_script 'dist_upgrade_packages', <<-ENDSCRIPT
@@ -673,7 +673,7 @@ namespace :rubber do
 
           #{apt_get_update_script}
 
-          apt-get -q -o Dpkg::Options::=--force-confold -y --force-yes dist-upgrade
+          apt-get -q -o Dpkg::Options::=--force-confold -y --allow dist-upgrade
         ENDSCRIPT
       end
     else
@@ -682,7 +682,7 @@ namespace :rubber do
 
         #{apt_get_update_script}
 
-        apt-get -q -o Dpkg::Options::=--force-confold -y --force-yes install $@
+        apt-get -q -o Dpkg::Options::=--force-confold -y --allow install $@
       ENDSCRIPT
 
       sudo_script 'install_packages', install_packages_script, opts.merge(:script_args => '$CAPISTRANO:VAR$')
