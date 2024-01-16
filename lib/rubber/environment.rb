@@ -80,8 +80,11 @@ module Rubber
 
         if bound.rails_credentials
           begin
-            require 'active_support/encrypted_configuration'
+            require 'active_support/concern'
             require 'active_support/core_ext/hash'
+            require 'active_support/deprecation'
+            require 'active_support/deprecator'
+            require 'active_support/encrypted_configuration'
 
             file = "#{@config_root}/#{bound.rails_credentials_env}.yml.enc"
             key = "#{@config_root}/#{bound.rails_credentials_env}.key"
