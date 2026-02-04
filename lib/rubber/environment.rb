@@ -42,7 +42,7 @@ module Rubber
           begin
             data = IO.read(file)
             data = yield(data) if block_given?
-            @items = Environment.combine(@items, YAML::load(ERB.new(data).result) || {})
+            @items = Environment.combine(@items, YAML.unsafe_load(ERB.new(data).result) || {})
           rescue Exception
             Rubber.logger.error{"Unable to read rubber configuration from #{file}"}
             raise
@@ -114,7 +114,7 @@ module Rubber
 
         # all the roles known about in yml files
         Dir["#{@config_root}/rubber*.yml"].each do |yml|
-          rubber_yml = YAML::load(ERB.new(IO.read(yml)).result) rescue {}
+          rubber_yml = YAML.unsafe_load(ERB.new(IO.read(yml)).result) rescue {}
           roles.concat(rubber_yml['roles'].keys) rescue nil
           roles.concat(rubber_yml['role_dependencies'].keys) rescue nil
           roles.concat(rubber_yml['role_dependencies'].values) rescue nil
@@ -208,7 +208,7 @@ module Rubber
         end
 
         def method_missing(method_id)
-          self[method_id.id2name]
+          self[method_id.to_s]
         end
 
         def expand_string(val)
@@ -291,7 +291,7 @@ module Rubber
         end
 
         def method_missing(method_id)
-          self[method_id.id2name]
+          self[method_id.to_s]
         end
 
       end

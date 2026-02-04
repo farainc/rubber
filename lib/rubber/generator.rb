@@ -90,12 +90,8 @@ module Rubber
             def system(*args)
               puts ("Not running system command during a fake_root transformation: #{args.inspect}")
             end
-            def open(*args)
-              if args.first && args.first =~ /^|/
-                puts ("Not running open/pipe command during a fake_root transformation: #{args.inspect}")
-              else
-                super
-              end
+            def popen(*args)
+              puts ("Not running IO.popen command during a fake_root transformation: #{args.inspect}")
             end
             alias ` system
             alias exec system
@@ -122,8 +118,13 @@ module Rubber
           raise "Transformation requires either a output filename or command"
         end
 
-        reader = config_path || "|#{config.read_cmd}"
-        orig = IO.read(reader) rescue ""
+        orig = if config_path
+                 IO.read(config_path) rescue ""
+               elsif config.read_cmd
+                 IO.popen(config.read_cmd) { |io| io.read } rescue ""
+               else
+                 ""
+               end
 
         # When additive is set we need to only replace between our delimiters
         if config.additive
@@ -144,11 +145,11 @@ module Rubber
           FileUtils.mkdir_p(File.dirname(config_path)) if config_path
 
           # Write a backup of original
-          open("#{config_path}.bak", 'w') { |f| f.write(orig) } if config_path && config.backup
+          File.open("#{config_path}.bak", 'w') { |f| f.write(orig) } if config_path && config.backup
 
           # Write out transformed file
           if config_path
-            open(config_path, 'w') do |pipe|
+            File.open(config_path, 'w') do |pipe|
               pipe.write(result)
             end
 

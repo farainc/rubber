@@ -58,7 +58,7 @@ namespace :rubber do
         FileUtils.mkdir_p(File.dirname(backup_file))
 
         # Use database.yml to get connection params
-        db = YAML::load(ERB.new(IO.read(File.join(File.dirname(__FILE__), '..','database.yml'))).result)[Rubber.env]
+        db = YAML.unsafe_load(ERB.new(IO.read(File.join(File.dirname(__FILE__), '..','database.yml'))).result)[Rubber.env]
         user = db['username']
         pass = db['password']
         pass = nil if pass and pass.strip.size == 0
@@ -79,7 +79,7 @@ namespace :rubber do
         dest = "db/#{File.basename(backup_file)}"
           
         puts "Saving db dump to cloud: #{backup_bucket}:#{dest}"
-        Rubber.cloud.storage(backup_bucket).store(dest, open(backup_file))
+        Rubber.cloud.storage(backup_bucket).store(dest, File.open(backup_file))
         
         send :restore_cloud
 
