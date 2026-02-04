@@ -862,21 +862,38 @@ namespace :rubber do
   # Helper script that only issues an apt-get update command if the apt sources list has changed.
   def apt_get_update_script
     <<-ENDSCRIPT
+      # Enable nullglob to handle empty directories gracefully
+      shopt -s nullglob
+
       if [[ ! -f /tmp/apt_sources.md5 ]]; then
         apt-get -q update
 
-        md5sum /etc/apt/sources.list > /tmp/apt_sources.md5
-        md5sum /etc/apt/sources.list.d/*.list >> /tmp/apt_sources.md5
-      else
-        md5sum /etc/apt/sources.list > /tmp/apt_sources_compare.md5
-        md5sum /etc/apt/sources.list.d/*.list >> /tmp/apt_sources_compare.md5
+        # Generate initial checksums
+        md5sum /etc/apt/sources.list > /tmp/apt_sources.md5 2>/dev/null || true
 
-        if [[ `diff /tmp/apt_sources.md5 /tmp/apt_sources_compare.md5` ]]; then
+        # Add checksums for sources.list.d files if they exist
+        for list_file in /etc/apt/sources.list.d/*.list; do
+          [[ -f "$list_file" ]] && md5sum "$list_file" >> /tmp/apt_sources.md5
+        done
+      else
+        # Generate current checksums
+        md5sum /etc/apt/sources.list > /tmp/apt_sources_compare.md5 2>/dev/null || true
+
+        # Add checksums for sources.list.d files if they exist
+        for list_file in /etc/apt/sources.list.d/*.list; do
+          [[ -f "$list_file" ]] && md5sum "$list_file" >> /tmp/apt_sources_compare.md5
+        done
+
+        # Check if sources changed
+        if ! diff -q /tmp/apt_sources.md5 /tmp/apt_sources_compare.md5 &>/dev/null; then
           apt-get -q update
         fi
 
         mv /tmp/apt_sources_compare.md5 /tmp/apt_sources.md5
       fi
+
+      # Restore default glob behavior
+      shopt -u nullglob
     ENDSCRIPT
   end
 
