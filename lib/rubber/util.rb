@@ -64,7 +64,7 @@ module Rubber
 
     # Opens the file for writing by root
     def sudo_open(path, perms, &block)
-      open("|sudo tee #{path} > /dev/null", perms, &block)
+      IO.popen("sudo tee #{path} > /dev/null", perms, &block)
     end
 
     def is_rails?
